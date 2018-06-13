@@ -1,0 +1,50 @@
+﻿@model IEnumerable<Challange>
+
+@inject UserManager<ApplicationUser> UserManager
+
+<a asp-action="New" class="btn btn-default pull-right">Create New Challange</a>
+
+<h2>Weight Loss Challanges</h2>
+<hr />
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Bet</th>
+            <th>Start</th>
+            <th>End</th>
+            <td></td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var challange in Model)
+        {
+            <tr>
+                <td title="@challange.Description">
+                    @challange.Title
+                </td>
+                <td>
+                    @($"{challange.Bet:c}")
+                </td>
+                <td>
+                    @($"{challange.Start:MM/dd/yyy}")
+                </td>
+                <td>
+                    @($"{challange.End:MM/dd/yyy}")
+                </td>
+                <td>
+                    @if (challange.ParticipantIds.Contains(UserManager.GetUserId(User)))
+                    {
+                        <span class="label label-success">You are participating in this challange!</span>
+                    }
+                    else
+                    {
+                        <form asp-action="Join" asp-route-id="@challange.Id" method="post">
+                            <button type="submit" class="btn btn-outline btn-info btn-sm">Join this Challange!</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

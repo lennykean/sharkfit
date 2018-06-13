@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore;
+﻿using System.IO;
+
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
 namespace SharkFit.Web
@@ -7,6 +9,9 @@ namespace SharkFit.Web
     {
         public static void Main(string[] args)
         {
+            var dataDir = new DirectoryInfo("data");
+            dataDir.Create();
+
             CreateWebHostBuilder(args).Build().Run();
         }
 
