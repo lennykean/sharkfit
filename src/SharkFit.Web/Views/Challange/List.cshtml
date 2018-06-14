@@ -21,7 +21,7 @@
         {
             <tr>
                 <td title="@challange.Description">
-                    @challange.Title
+                    <a asp-action="Detail" asp-route-id="@challange.Id">@challange.Title</a>
                 </td>
                 <td>
                     @($"{challange.Bet:c}")
@@ -33,15 +33,13 @@
                     @($"{challange.End:MM/dd/yyy}")
                 </td>
                 <td>
-                    @if (challange.ParticipantIds.Contains(UserManager.GetUserId(User)))
+                    @if (challange.Participants.Any(p => p.UserId == UserManager.GetUserId(User)))
                     {
                         <span class="label label-success">You are participating in this challange!</span>
                     }
                     else
                     {
-                        <form asp-action="Join" asp-route-id="@challange.Id" method="post">
-                            <button type="submit" class="btn btn-outline btn-info btn-sm">Join this Challange!</button>
-                        </form>
+                        <a asp-action="Join" asp-route-id="@challange.Id" class="btn btn-outline btn-info btn-sm">Join this Challange!</a>
                     }
                 </td>
             </tr>

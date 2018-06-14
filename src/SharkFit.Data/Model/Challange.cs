@@ -17,6 +17,6 @@ namespace SharkFit.Data.Model
         [Required, DataType(DataType.Date)]
         public DateTime? End { get; set; }
 
-        public List<string> ParticipantIds { get; set; } = new List<string>();
+        public List<Participant> Participants { get; set; } = new List<Participant>();
     }
 }

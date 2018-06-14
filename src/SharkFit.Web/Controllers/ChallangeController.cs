@@ -1,4 +1,7 @@
-﻿using AspNetCore.Identity.LiteDB.Models;
+﻿using System;
+using System.Linq;
+
+using AspNetCore.Identity.LiteDB.Models;
 
 using LiteDB;
 
@@ -20,6 +23,16 @@ namespace SharkFit.Web.Controllers
         {
             _collection = collection;
             _userManager = userManager;
+        }
+
+        [HttpGet]
+        public IActionResult Detail(int id)
+        {
+            var challange = _collection.FindById(id);
+            if (challange == null)
+                return NotFound();
+
+            return View(challange);
         }
 
         [HttpGet]
@@ -47,21 +60,36 @@ namespace SharkFit.Web.Controllers
             return RedirectToAction("List");
         }
 
-        [HttpPost]
+        [HttpGet]
         public IActionResult Join(int id)
         {
             var challange = _collection.FindById(id);
             if (challange == null)
                 return NotFound();
+            
+            return View(challange);
+        }
+
+        [HttpPost]
+        public IActionResult Join(int id, Participant participant)
+        {
+            var challange = _collection.FindById(id);
+            if (challange == null)
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return View(challange);
 
             var userId = _userManager.GetUserId(User);
-            if (!challange.ParticipantIds.Contains(userId))
+
+            if (!challange.Participants.Any(p => p.UserId == userId))
             {
-                challange.ParticipantIds.Add(userId);
+                participant.UserId = userId;
+                participant.Joined = DateTime.Now;
+                challange.Participants.Add(participant);
                 _collection.Update(challange);
             }
-
-            return RedirectToAction("List");
+            return RedirectToAction("Detail", new { id });
         }
     }
 }

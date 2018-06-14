@@ -1,0 +1,25 @@
+﻿@model Challange
+
+<h2>@Model.Title</h2>
+<hr />
+<h4>@($"{Model.Start:MM/dd/yyy}") - @($"{Model.End:MM/dd/yyy}")</h4>
+<hr />
+<p>@Model.Description</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Participant</th>
+            <th>Joined</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var participant in Model.Participants)
+    {
+        <tr>
+            <td>@participant.Name</td>
+            <td>@participant.Joined</td>
+        </tr>
+    }
+    </tbody>
+</table>
