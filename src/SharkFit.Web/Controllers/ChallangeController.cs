@@ -10,33 +10,59 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using SharkFit.Data.Model;
+using SharkFit.Web.ViewModels;
 
 namespace SharkFit.Web.Controllers
 {
     [Authorize]
     public class ChallangeController : Controller
     {
-        private readonly LiteCollection<Challange> _collection;
+        private readonly LiteCollection<Challange> _challangeCollection;
+        private readonly LiteCollection<Checkin> _checkinCollection;
 
-        public ChallangeController(LiteCollection<Challange> collection)
+        public ChallangeController(LiteCollection<Challange> challangeCollection, LiteCollection<Checkin> checkinCollection)
         {
-            _collection = collection;
+            _challangeCollection = challangeCollection;
+            _checkinCollection = checkinCollection;
         }
 
         [HttpGet]
         public IActionResult Detail(int id)
         {
-            var challange = _collection.FindById(id);
+            var challange = _challangeCollection.FindById(id);
             if (challange == null)
                 return NotFound();
 
-            return View(challange);
+            return View(new ChallangeDetailViewModel
+            {
+                Id = challange.Id,
+                Title = challange.Title,
+                Description = challange.Description,
+                Bet = challange.Bet,
+                Start = challange.Start,
+                End = challange.End,
+                Participants = (
+                    from p in challange.Participants
+                    let checkins = _checkinCollection.Find(c => c.UserId == p.UserId).ToList()
+                    let firstCheckin = checkins.OrderBy(c => c.CheckinDate).FirstOrDefault()
+                    let lastCheckin = checkins.OrderByDescending(c => c.CheckinDate).FirstOrDefault()
+                    select new ChallangeParticipantViewModel
+                    {
+                        UserId = p.UserId,
+                        Name = p.Name,
+                        Joined = p.Joined,
+                        StartingWeight = firstCheckin?.Weight,
+                        LastCheckin = lastCheckin?.CheckinDate,
+                        LastWeight = lastCheckin?.Weight,
+                        Weightloss = firstCheckin?.Weight - lastCheckin?.Weight
+                    }).ToList()
+            });
         }
 
         [HttpGet]
         public IActionResult List()
         {
-            var challanges = _collection.FindAll();
+            var challanges = _challangeCollection.FindAll();
 
             return View(challanges);
         }
@@ -53,7 +79,7 @@ namespace SharkFit.Web.Controllers
             if (!ModelState.IsValid)
                 return View();
 
-            _collection.Insert(model);
+            _challangeCollection.Insert(model);
 
             return RedirectToAction("List");
         }
@@ -61,7 +87,7 @@ namespace SharkFit.Web.Controllers
         [HttpGet]
         public IActionResult Join(int id)
         {
-            var challange = _collection.FindById(id);
+            var challange = _challangeCollection.FindById(id);
             if (challange == null)
                 return NotFound();
             
@@ -71,7 +97,7 @@ namespace SharkFit.Web.Controllers
         [HttpPost]
         public IActionResult Join(int id, Participant participant, [FromClaim(ClaimTypes.NameIdentifier)]string userId)
         {
-            var challange = _collection.FindById(id);
+            var challange = _challangeCollection.FindById(id);
             if (challange == null)
                 return NotFound();
 
@@ -83,7 +109,7 @@ namespace SharkFit.Web.Controllers
                 participant.UserId = userId;
                 participant.Joined = DateTime.Now;
                 challange.Participants.Add(participant);
-                _collection.Update(challange);
+                _challangeCollection.Update(challange);
             }
             return RedirectToAction("Detail", new { id });
         }

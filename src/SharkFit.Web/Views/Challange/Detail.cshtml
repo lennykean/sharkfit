@@ -1,4 +1,4 @@
-﻿@model Challange
+﻿@model ChallangeDetailViewModel
 
 @inject UserManager<ApplicationUser> UserManager
 
@@ -8,26 +8,54 @@
 <hr />
 <p>@Model.Description</p>
 
+<hr />
 @if (Model.Participants.Any(p => p.UserId == UserManager.GetUserId(User)))
 {
-    <hr />
     <a asp-controller="Checkin" asp-action="Checkin" asp-route-challangeId="@Model.Id" class="btn btn-success">Check In!</a>
-    <hr />
 }
+else
+{
+    <a asp-action="Join" asp-route-id="@Model.Id" class="btn btn-info">Join this Challange!</a>
+}
+<hr />
 
+<h3>Leaderboard</h3>
 <table class="table">
     <thead>
         <tr>
-            <th>Participant</th>
+            <th>Rank</th>
+            <th>Name</th>
             <th>Joined</th>
+            <th>Last Checkin</th>
+            <th>Weight</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var participant in Model.Participants)
+        @foreach (var ranking in Model.Participants.OrderByDescending(p => p.Weightloss).Select((participant, index) => new { participant, rank = index + 1 }))
         {
             <tr>
-                <td>@participant.Name</td>
-                <td>@participant.Joined</td>
+                <td>@ranking.rank</td>
+                <td>@ranking.participant.Name</td>
+                <td>@ranking.participant.Joined</td>
+                <td>@(ranking.participant.LastCheckin?.ToString() ?? "Never")</td>
+                <td>
+                    <span title="Starting Weight">
+                        @(ranking.participant.StartingWeight?.ToString() ?? "--")
+                    </span>/
+                    <span title="Last Weight">
+                        @(ranking.participant.LastWeight?.ToString() ?? "--")
+                    </span>
+                    <span title="Gain/Loss" style="font-weight: bold">
+                        @if (ranking.participant.Weightloss < 0)
+                        {
+                            @:(<span style="color: lightcoral">+@(-ranking.participant.Weightloss)</span>)
+                        }
+                        else if (ranking.participant.Weightloss > 0)
+                        {
+                            @:(<span style="color: darkgreen">-@(ranking.participant.Weightloss)</span>)
+                        }
+                    </span>
+                </td>
             </tr>
         }
     </tbody>
