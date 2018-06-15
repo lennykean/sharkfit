@@ -4,32 +4,39 @@
 <div class="navbar navbar-default navbar-fixed-top">
     <div class="container">
         <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
             <a href="/" class="navbar-brand">SharkFit</a>
         </div>
-        <ul class="nav navbar-nav">
-            <li><a href="/Challange/List">Challanges</a></li>
-        </ul>
-        <ul class="nav navbar-nav navbar-right">
-            @if (SignInManager.IsSignedIn(User))
-            {
-                <li>
-                    <a asp-area="Identity" asp-page="/Account/Manage/Index">@UserManager.GetUserName(User)</a>
-                </li>
-                <li>
-                    <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post">
-                        <button type="submit" class="btn btn-link navbar-btn navbar-link">Logout</button>
-                    </form>
-                </li>
-            }
-            else
-            {
-                <li>
-                    <a asp-area="Identity" asp-page="/Account/Register">Register</a>
-                </li>
-                <li>
-                    <a asp-area="Identity" asp-page="/Account/Login">Login</a>
-                </li>
-            }
-        </ul>
+        <div class="collapse navbar-collapse" id="navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li><a asp-controller="Challange" asp-action="List">Challanges</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <li>
+                        <a asp-area="Identity" asp-page="/Account/Manage/Index">@UserManager.GetUserName(User)</a>
+                    </li>
+                    <li>
+                        <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post">
+                            <button type="submit" class="btn btn-link navbar-btn navbar-link">Logout</button>
+                        </form>
+                    </li>
+                }
+                else
+                {
+                    <li>
+                        <a asp-area="Identity" asp-page="/Account/Register">Register</a>
+                    </li>
+                    <li>
+                        <a asp-area="Identity" asp-page="/Account/Login">Login</a>
+                    </li>
+                }
+            </ul>
+        </div>
     </div>
 </div>
