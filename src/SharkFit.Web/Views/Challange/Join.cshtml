@@ -3,6 +3,10 @@
 <h2>Join @Model.Title</h2>
 <hr />
 <h4>@($"{Model.Start:MM/dd/yyy}") - @($"{Model.End:MM/dd/yyy}")</h4>
-<form asp-action="Join" asp-route-id="@Model.Id">
+<form asp-action="Join" asp-route-id="@Model.Id" method="post">
     <partial name="_JoinForm" model="new Participant()" />
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Join!</button>&nbsp;
+        <a asp-action="Detail" asp-route-id="@Model.Id" class="btn btn-default">Cancel</a>
+    </div>
 </form>
