@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Linq;
+using System.Security.Claims;
 
-using AspNetCore.Identity.LiteDB.Models;
+using AspNetCore.ClaimsValueProvider;
 
 using LiteDB;
 
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 using SharkFit.Data.Model;
@@ -17,12 +17,10 @@ namespace SharkFit.Web.Controllers
     public class ChallangeController : Controller
     {
         private readonly LiteCollection<Challange> _collection;
-        private readonly UserManager<ApplicationUser> _userManager;
 
-        public ChallangeController(LiteCollection<Challange> collection, UserManager<ApplicationUser> userManager)
+        public ChallangeController(LiteCollection<Challange> collection)
         {
             _collection = collection;
-            _userManager = userManager;
         }
 
         [HttpGet]
@@ -71,7 +69,7 @@ namespace SharkFit.Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult Join(int id, Participant participant)
+        public IActionResult Join(int id, Participant participant, [FromClaim(ClaimTypes.NameIdentifier)]string userId)
         {
             var challange = _collection.FindById(id);
             if (challange == null)
@@ -79,9 +77,7 @@ namespace SharkFit.Web.Controllers
 
             if (!ModelState.IsValid)
                 return View(challange);
-
-            var userId = _userManager.GetUserId(User);
-
+            
             if (!challange.Participants.Any(p => p.UserId == userId))
             {
                 participant.UserId = userId;

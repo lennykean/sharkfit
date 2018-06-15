@@ -1,10 +1,19 @@
 ﻿@model Challange
 
+@inject UserManager<ApplicationUser> UserManager
+
 <h2>@Model.Title</h2>
 <hr />
 <h4>@($"{Model.Start:MM/dd/yyy}") - @($"{Model.End:MM/dd/yyy}")</h4>
 <hr />
 <p>@Model.Description</p>
+
+@if (Model.Participants.Any(p => p.UserId == UserManager.GetUserId(User)))
+{
+    <hr />
+    <a asp-controller="Checkin" asp-action="Checkin" asp-route-challangeId="@Model.Id" class="btn btn-success">Check In!</a>
+    <hr />
+}
 
 <table class="table">
     <thead>
@@ -14,12 +23,12 @@
         </tr>
     </thead>
     <tbody>
-    @foreach (var participant in Model.Participants)
-    {
-        <tr>
-            <td>@participant.Name</td>
-            <td>@participant.Joined</td>
-        </tr>
-    }
+        @foreach (var participant in Model.Participants)
+        {
+            <tr>
+                <td>@participant.Name</td>
+                <td>@participant.Joined</td>
+            </tr>
+        }
     </tbody>
 </table>

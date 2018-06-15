@@ -1,4 +1,5 @@
-﻿using AspNetCore.Identity.LiteDB;
+﻿using AspNetCore.ClaimsValueProvider;
+using AspNetCore.Identity.LiteDB;
 using AspNetCore.Identity.LiteDB.Data;
 using AspNetCore.Identity.LiteDB.Models;
 
@@ -29,8 +30,11 @@ namespace SharkFit.Web
                 .AddRoleStore<LiteDbRoleStore<IdentityRole>>()
                 .AddDefaultTokenProviders()
                 .AddDefaultUI();
-            
+
             services.AddTransient(service => service.GetService<LiteDatabase>().GetCollection<Challange>());
+            services.AddTransient(service => service.GetService<LiteDatabase>().GetCollection<Checkin>());
+
+            services.AddMvc(options => options.AddClaimsValueProvider());
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
