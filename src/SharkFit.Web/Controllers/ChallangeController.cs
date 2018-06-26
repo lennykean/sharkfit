@@ -43,7 +43,7 @@ namespace SharkFit.Web.Controllers
                 End = challange.End,
                 Participants = (
                     from p in challange.Participants
-                    let checkins = _checkinCollection.Find(c => c.UserId == p.UserId).ToList()
+                    let checkins = _checkinCollection.Find(c => c.UserId == p.UserId && c.ChallangeId == id).ToList()
                     let firstCheckin = checkins.OrderBy(c => c.CheckinDate).FirstOrDefault()
                     let lastCheckin = checkins.OrderByDescending(c => c.CheckinDate).FirstOrDefault()
                     select new ChallangeParticipantViewModel
