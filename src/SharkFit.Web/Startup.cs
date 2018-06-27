@@ -1,4 +1,7 @@
-﻿using AspNetCore.ClaimsValueProvider;
+﻿using System;
+using System.Threading.Tasks;
+
+using AspNetCore.ClaimsValueProvider;
 using AspNetCore.Identity.LiteDB;
 using AspNetCore.Identity.LiteDB.Data;
 using AspNetCore.Identity.LiteDB.Models;
@@ -35,6 +38,20 @@ namespace SharkFit.Web
             services.AddTransient(service => service.GetService<LiteDatabase>().GetCollection<Checkin>());
 
             services.AddMvc(options => options.AddClaimsValueProvider());
+
+            services.ConfigureApplicationCookie(config =>
+            {
+                config.Events.OnRedirectToLogin = options =>
+                {
+                    var redirectUri = new UriBuilder(options.RedirectUri)
+                    {
+                        Scheme = options.Request.Scheme
+                    };
+                    options.RedirectUri = redirectUri.Uri.ToString();
+
+                    return Task.CompletedTask;
+                };
+            });
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
