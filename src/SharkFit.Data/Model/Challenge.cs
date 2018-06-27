@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SharkFit.Data.Model
 {
-    public class Challange
+    public class Challenge
     {
         public int Id { get; set; }
         [Required]

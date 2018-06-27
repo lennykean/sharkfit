@@ -1,11 +1,11 @@
-﻿@model Challange
+﻿@model Challenge
 
 <h2>@Model.Title Check In</h2>
 <hr />
-<form asp-action="Checkin" asp-route-challangeId="@Model.Id" method="post">
+<form asp-action="Checkin" asp-route-challengeId="@Model.Id" method="post">
     <partial name="_CheckinForm" model="new Checkin()" />
     <div class="form-group">
         <button type="submit" class="btn btn-primary">Check in</button>&nbsp;
-        <a asp-controller="Challange" asp-action="Detail" asp-route-id="@Model.Id" class="btn btn-outline btn-default">Cancel</a>
+        <a asp-controller="Challenge" asp-action="Detail" asp-route-id="@Model.Id" class="btn btn-outline btn-default">Cancel</a>
     </div>
 </form>

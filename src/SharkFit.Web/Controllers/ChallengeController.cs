@@ -15,38 +15,38 @@ using SharkFit.Web.ViewModels;
 namespace SharkFit.Web.Controllers
 {
     [Authorize]
-    public class ChallangeController : Controller
+    public class ChallengeController : Controller
     {
-        private readonly LiteCollection<Challange> _challangeCollection;
+        private readonly LiteCollection<Challenge> _challengeCollection;
         private readonly LiteCollection<Checkin> _checkinCollection;
 
-        public ChallangeController(LiteCollection<Challange> challangeCollection, LiteCollection<Checkin> checkinCollection)
+        public ChallengeController(LiteCollection<Challenge> challengeCollection, LiteCollection<Checkin> checkinCollection)
         {
-            _challangeCollection = challangeCollection;
+            _challengeCollection = challengeCollection;
             _checkinCollection = checkinCollection;
         }
 
         [HttpGet]
         public IActionResult Detail(int id)
         {
-            var challange = _challangeCollection.FindById(id);
-            if (challange == null)
+            var challenge = _challengeCollection.FindById(id);
+            if (challenge == null)
                 return NotFound();
 
-            return View(new ChallangeDetailViewModel
+            return View(new ChallengeDetailViewModel
             {
-                Id = challange.Id,
-                Title = challange.Title,
-                Description = challange.Description,
-                Bet = challange.Bet,
-                Start = challange.Start,
-                End = challange.End,
+                Id = challenge.Id,
+                Title = challenge.Title,
+                Description = challenge.Description,
+                Bet = challenge.Bet,
+                Start = challenge.Start,
+                End = challenge.End,
                 Participants = (
-                    from p in challange.Participants
-                    let checkins = _checkinCollection.Find(c => c.UserId == p.UserId && c.ChallangeId == id).ToList()
+                    from p in challenge.Participants
+                    let checkins = _checkinCollection.Find(c => c.UserId == p.UserId && c.ChallengeId == id).ToList()
                     let firstCheckin = checkins.OrderBy(c => c.CheckinDate).FirstOrDefault()
                     let lastCheckin = checkins.OrderByDescending(c => c.CheckinDate).FirstOrDefault()
-                    select new ChallangeParticipantViewModel
+                    select new ChallengeParticipantViewModel
                     {
                         UserId = p.UserId,
                         Name = p.Name,
@@ -62,9 +62,9 @@ namespace SharkFit.Web.Controllers
         [HttpGet]
         public IActionResult List()
         {
-            var challanges = _challangeCollection.FindAll();
+            var challenges = _challengeCollection.FindAll();
 
-            return View(challanges);
+            return View(challenges);
         }
 
         [HttpGet]
@@ -74,12 +74,12 @@ namespace SharkFit.Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult New(Challange model)
+        public IActionResult New(Challenge model)
         {
             if (!ModelState.IsValid)
                 return View();
 
-            _challangeCollection.Insert(model);
+            _challengeCollection.Insert(model);
 
             return RedirectToAction("List");
         }
@@ -87,29 +87,29 @@ namespace SharkFit.Web.Controllers
         [HttpGet]
         public IActionResult Join(int id)
         {
-            var challange = _challangeCollection.FindById(id);
-            if (challange == null)
+            var challenge = _challengeCollection.FindById(id);
+            if (challenge == null)
                 return NotFound();
             
-            return View(challange);
+            return View(challenge);
         }
 
         [HttpPost]
         public IActionResult Join(int id, Participant participant, [FromClaim(ClaimTypes.NameIdentifier)]string userId)
         {
-            var challange = _challangeCollection.FindById(id);
-            if (challange == null)
+            var challenge = _challengeCollection.FindById(id);
+            if (challenge == null)
                 return NotFound();
 
             if (!ModelState.IsValid)
-                return View(challange);
+                return View(challenge);
             
-            if (!challange.Participants.Any(p => p.UserId == userId))
+            if (!challenge.Participants.Any(p => p.UserId == userId))
             {
                 participant.UserId = userId;
                 participant.Joined = DateTime.Now;
-                challange.Participants.Add(participant);
-                _challangeCollection.Update(challange);
+                challenge.Participants.Add(participant);
+                _challengeCollection.Update(challenge);
             }
             return RedirectToAction("Detail", new { id });
         }

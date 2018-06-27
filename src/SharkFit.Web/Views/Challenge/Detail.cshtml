@@ -1,4 +1,4 @@
-﻿@model ChallangeDetailViewModel
+﻿@model ChallengeDetailViewModel
 
 @inject UserManager<ApplicationUser> UserManager
 
@@ -11,11 +11,11 @@
 <hr />
 @if (Model.Participants.Any(p => p.UserId == UserManager.GetUserId(User)))
 {
-    <a asp-controller="Checkin" asp-action="Checkin" asp-route-challangeId="@Model.Id" class="btn btn-success">Check In!</a>
+    <a asp-controller="Checkin" asp-action="Checkin" asp-route-challengeId="@Model.Id" class="btn btn-success">Check In!</a>
 }
 else
 {
-    <a asp-action="Join" asp-route-id="@Model.Id" class="btn btn-info">Join this Challange!</a>
+    <a asp-action="Join" asp-route-id="@Model.Id" class="btn btn-info">Join this Challenge!</a>
 }
 <hr />
 

@@ -12,41 +12,41 @@ using SharkFit.Data.Model;
 
 namespace SharkFit.Web.Controllers
 {
-    [Authorize, Route("Challange/{challangeId:int}")]
+    [Authorize, Route("Challenge/{challengeId:int}")]
     public class CheckinController : Controller
     {
-        private readonly LiteCollection<Challange> _challangeCollection;
+        private readonly LiteCollection<Challenge> _challengeCollection;
         private readonly LiteCollection<Checkin> _checkinCollection;
 
-        public CheckinController(LiteCollection<Challange> challangeCollection, LiteCollection<Checkin> checkinCollection)
+        public CheckinController(LiteCollection<Challenge> challengeCollection, LiteCollection<Checkin> checkinCollection)
         {
-            _challangeCollection = challangeCollection;
+            _challengeCollection = challengeCollection;
             _checkinCollection = checkinCollection;
         }
 
         [HttpGet("Checkin")]
-        public IActionResult Checkin(int challangeId)
+        public IActionResult Checkin(int challengeId)
         {
-            var challange = _challangeCollection.FindById(challangeId);
-            if (challange == null)
+            var challenge = _challengeCollection.FindById(challengeId);
+            if (challenge == null)
                 return NotFound();
 
-            return View(challange);
+            return View(challenge);
         }
 
         [HttpPost("Checkin")]
-        public IActionResult Checkin(int challangeId, Checkin checkin, [FromClaim(ClaimTypes.NameIdentifier)]string userId)
+        public IActionResult Checkin(int challengeId, Checkin checkin, [FromClaim(ClaimTypes.NameIdentifier)]string userId)
         {
-            var challange = _challangeCollection.FindById(challangeId);
-            if (challange == null)
+            var challenge = _challengeCollection.FindById(challengeId);
+            if (challenge == null)
                 return NotFound();
 
             checkin.UserId = userId;
-            checkin.ChallangeId = challangeId;
+            checkin.ChallengeId = challengeId;
             checkin.CheckinDate = DateTime.Now;
             _checkinCollection.Insert(checkin);
 
-            return RedirectToAction("Detail", "Challange", new { id = challangeId });
+            return RedirectToAction("Detail", "Challenge", new { id = challengeId });
         }
     }
 }

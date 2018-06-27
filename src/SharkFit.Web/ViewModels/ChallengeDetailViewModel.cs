@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SharkFit.Web.ViewModels
 {
-    public class ChallangeDetailViewModel
+    public class ChallengeDetailViewModel
     {
         public int Id { get; set; }
         public string Title { get; set; }
@@ -12,6 +12,6 @@ namespace SharkFit.Web.ViewModels
         public DateTime? Start { get; set; }
         public DateTime? End { get; set; }
 
-        public IEnumerable<ChallangeParticipantViewModel> Participants { get; set; }
+        public IEnumerable<ChallengeParticipantViewModel> Participants { get; set; }
     }
 }

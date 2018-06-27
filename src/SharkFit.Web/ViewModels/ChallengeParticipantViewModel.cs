@@ -2,7 +2,7 @@
 
 namespace SharkFit.Web.ViewModels
 {
-    public class ChallangeParticipantViewModel
+    public class ChallengeParticipantViewModel
     {
         public string UserId { get; set; }
         public string Name { get; set; }

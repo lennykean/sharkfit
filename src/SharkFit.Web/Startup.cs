@@ -31,7 +31,7 @@ namespace SharkFit.Web
                 .AddDefaultTokenProviders()
                 .AddDefaultUI();
 
-            services.AddTransient(service => service.GetService<LiteDatabase>().GetCollection<Challange>());
+            services.AddTransient(service => service.GetService<LiteDatabase>().GetCollection<Challenge>());
             services.AddTransient(service => service.GetService<LiteDatabase>().GetCollection<Checkin>());
 
             services.AddMvc(options => options.AddClaimsValueProvider());
