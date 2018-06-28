@@ -48,7 +48,7 @@ namespace SharkFit.Web
 
             services.AddHttpsRedirection(options => options.HttpsPort = 443);
 
-            services.Configure<ForwardedHeadersOptions>(options => options.ForwardedHeaders = ForwardedHeaders.All);
+            services.Configure<ForwardedHeadersOptions>(options => options.ForwardedHeaders = ForwardedHeaders.XForwardedProto);
             
             services.AddMvc(options => options.AddClaimsValueProvider());
         }
@@ -65,8 +65,8 @@ namespace SharkFit.Web
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                app.UseHttpsRedirection();
             }
+                app.UseHttpsRedirection();
 
             app.UseStaticFiles();
             app.UseCookiePolicy();
