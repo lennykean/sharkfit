@@ -11,6 +11,7 @@ using LiteDB;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 using SharkFit.Data.Model;
@@ -21,6 +22,10 @@ namespace SharkFit.Web
 {
     public class Startup
     {
+        private readonly IConfiguration _configuration;
+
+        public Startup(IConfiguration configuration) => _configuration = configuration;
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton(service => new LiteDatabase("Filename=data/sharkfit.db;mode=Exclusive;"));
@@ -33,6 +38,12 @@ namespace SharkFit.Web
                 .AddRoleStore<LiteDbRoleStore<IdentityRole>>()
                 .AddDefaultTokenProviders()
                 .AddDefaultUI();
+
+            services.AddAuthentication().AddMicrosoftAccount(options =>
+            {
+                options.ClientId = _configuration["Authentication:Microsoft:ApplicationId"];
+                options.ClientSecret = _configuration["Authentication:Microsoft:Password"];
+            });
 
             services.AddTransient(service => service.GetService<LiteDatabase>().GetCollection<Challenge>());
             services.AddTransient(service => service.GetService<LiteDatabase>().GetCollection<Checkin>());
