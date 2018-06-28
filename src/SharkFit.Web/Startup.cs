@@ -66,7 +66,6 @@ namespace SharkFit.Web
             {
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHttpsRedirection();
-                app.UseHsts();
             }
 
             app.UseStaticFiles();
